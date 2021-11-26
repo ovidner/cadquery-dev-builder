@@ -1,0 +1,43 @@
+name: Build
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 5 * * *"
+jobs:
+  build:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+        python:
+          - 3.8
+          - 3.9
+          - 3.10
+    defaults:
+      run:
+        shell: bash -l {0}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          channels: cadquery,conda-forge
+          channel-priority: strict
+          python-version: 3.9
+          mamba-version: "*"
+      - run: conda install -y conda-build conda-verify setuptools-scm
+      - uses: actions/checkout@v2
+        with:
+          repository: CadQuery/cadquery
+          fetch-depth: 0
+      - name: Build and upload
+        env:
+          PYTHON_VERSION: ${{ matrix.python }}
+          ANACONDA_USER: ovidner
+          ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
+        run: |
+          export PACKAGE_VERSION=$(python -c "from setuptools_scm import get_version; print(get_version())")
+          export BUILD_OUTPUT=$(conda build ./conda --output)
+          conda build ./conda
+          anaconda --verbose --token $ANACONDA_TOKEN upload --force --user $ANACONDA_USER --label cq-dev $BUILD_OUTPUT
