@@ -32,7 +32,7 @@ jobs:
           use-mamba: true
       - run: mamba install -y pywin32=301
         if: startsWith(matrix.os, 'windows')
-      - run: mamba install -y anaconda-client boa conda-verify setuptools-scm
+      - run: mamba install -y anaconda-client conda-build conda-verify setuptools-scm
       - uses: actions/checkout@v2
         with:
           repository: CadQuery/cadquery
@@ -44,6 +44,6 @@ jobs:
           ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
         run: |
           export PACKAGE_VERSION=$(python -c "from setuptools_scm import get_version; print(get_version())")
-          export BUILD_OUTPUT=$(mamba mambabuild ./conda --output)
-          mamba mambabuild ./conda
+          export BUILD_OUTPUT=$(mamba build ./conda --output)
+          mamba build ./conda
           anaconda --verbose --token $ANACONDA_TOKEN upload --force --user $ANACONDA_USER --label cq-dev $BUILD_OUTPUT
