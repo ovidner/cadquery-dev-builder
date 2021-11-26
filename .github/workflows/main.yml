@@ -28,7 +28,7 @@ jobs:
           miniforge-variant: Mambaforge
           miniforge-version: latest
           use-mamba: true
-      - run: mamba install -y conda-build conda-verify setuptools-scm
+      - run: mamba install -y anaconda-client conda-build conda-verify setuptools-scm
       - uses: actions/checkout@v2
         with:
           repository: CadQuery/cadquery
