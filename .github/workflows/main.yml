@@ -25,7 +25,9 @@ jobs:
           channels: cadquery,conda-forge
           channel-priority: strict
           python-version: 3.9
-          mamba-version: "*"
+          miniforge-variant: Mambaforge
+          miniforge-version: latest
+          use-mamba: true
       - run: mamba install -y conda-build conda-verify setuptools-scm
       - uses: actions/checkout@v2
         with:
