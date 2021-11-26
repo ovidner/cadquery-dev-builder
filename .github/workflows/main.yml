@@ -26,7 +26,7 @@ jobs:
           channel-priority: strict
           python-version: 3.9
           mamba-version: "*"
-      - run: conda install -y conda-build conda-verify setuptools-scm
+      - run: mamba install -y conda-build conda-verify setuptools-scm
       - uses: actions/checkout@v2
         with:
           repository: CadQuery/cadquery
@@ -38,6 +38,6 @@ jobs:
           ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
         run: |
           export PACKAGE_VERSION=$(python -c "from setuptools_scm import get_version; print(get_version())")
-          export BUILD_OUTPUT=$(conda build ./conda --output)
-          conda build ./conda
+          export BUILD_OUTPUT=$(mamba build ./conda --output)
+          mamba build ./conda
           anaconda --verbose --token $ANACONDA_TOKEN upload --force --user $ANACONDA_USER --label cq-dev $BUILD_OUTPUT
